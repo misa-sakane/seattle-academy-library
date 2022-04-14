@@ -71,7 +71,6 @@ public class AccountController {
 
 		} else {
 			model.addAttribute("error", "パスワードは8文字以上の半角英数字にしてください。");
-			System.out.println("パスワードは8文字以上の半角英数字にしてください。");
 			return "createAccount";
 		}
 	}
