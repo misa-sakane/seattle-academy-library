@@ -31,45 +31,41 @@ public class BooksService {
      */
     public List<BookInfo> getBookList() {
 
-        // TODO 取得したい情報を取得するようにSQLを修正
-        List<BookInfo> getedBookList = jdbcTemplate.query(
-                "select * from books",
-                new BookInfoRowMapper());
+		// TODO 取得したい情報を取得するようにSQLを修正
+		List<BookInfo> getedBookList = jdbcTemplate.query(
+				"select * from books",
+				new BookInfoRowMapper());
 
-        return getedBookList;
-    }
+		return getedBookList;
+	}
 
-    /**
-     * 書籍IDに紐づく書籍詳細情報を取得する
-     *
-     * @param bookId 書籍ID
-     * @return 書籍情報
-     */
-    public BookDetailsInfo getBookInfo(int bookId) {
+	/**
+	 * 書籍IDに紐づく書籍詳細情報を取得する
+	 *
+	 * @param bookId 書籍ID
+	 * @return 書籍情報
+	 */
+	public BookDetailsInfo getBookInfo(int bookId) {
 
-        // JSPに渡すデータを設定する
-        String sql = "SELECT * FROM books where id ="
-                + bookId;
+		// JSPに渡すデータを設定する
+		String sql = "SELECT * FROM books where id =" + bookId;
 
-        BookDetailsInfo bookDetailsInfo = jdbcTemplate.queryForObject(sql, new BookDetailsInfoRowMapper());
+		BookDetailsInfo bookDetailsInfo = jdbcTemplate.queryForObject(sql, new BookDetailsInfoRowMapper());
 
-        return bookDetailsInfo;
-    }
+		return bookDetailsInfo;
+	}
 
-    /**
-     * 書籍を登録する
-     *
-     * @param bookInfo 書籍情報
-     */
-    public void registBook(BookDetailsInfo bookInfo) {
+	/**
+	 * 書籍を登録する
+	 *
+	 * @param bookInfo 書籍情報
+	 */
+	public void registBook(BookDetailsInfo bookInfo) {
 
-        String sql = "INSERT INTO books (title, author,publisher,thumbnail_name,thumbnail_url,reg_date,upd_date) VALUES ('"
-                + bookInfo.getTitle() + "','" + bookInfo.getAuthor() + "','" + bookInfo.getPublisher() + "','"
-                + bookInfo.getThumbnailName() + "','"
-                + bookInfo.getThumbnailUrl() + "',"
-                + "now(),"
-                + "now())";
+		String sql = "INSERT INTO books (title, author,publisher,thumbnail_name,thumbnail_url,reg_date,upd_date) VALUES ('"
+				+ bookInfo.getTitle() + "','" + bookInfo.getAuthor() + "','" + bookInfo.getPublisher() + "','"
+				+ bookInfo.getThumbnailName() + "','" + bookInfo.getThumbnailUrl() + "'," + "now()," + "now())";
 
-        jdbcTemplate.update(sql);
-    }
+		jdbcTemplate.update(sql);
+	}
 }
