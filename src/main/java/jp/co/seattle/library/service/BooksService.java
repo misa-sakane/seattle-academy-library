@@ -31,14 +31,12 @@ public class BooksService {
      */
     public List<BookInfo> getBookList() {
 
-		// TODO 取得したい情報を取得するようにSQLを修正
-		List<BookInfo> getedBookList = jdbcTemplate.query(
-				"select * from books",
-				new BookInfoRowMapper());
-
+        // TODO 取得したい情報を取得するようにSQLを修正
+        List<BookInfo> getedBookList = jdbcTemplate.query(
+                "select * from books order by title ",
+                new BookInfoRowMapper());
 		return getedBookList;
 	}
-
 	/**
 	 * 書籍IDに紐づく書籍詳細情報を取得する
 	 *
