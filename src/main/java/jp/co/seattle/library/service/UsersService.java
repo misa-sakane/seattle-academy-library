@@ -3,7 +3,6 @@ package jp.co.seattle.library.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -44,14 +43,12 @@ public class UsersService {
 	 */
 	public UserInfo selectUserInfo(String email, String password) {
 		// TODO SQL生成
-		// queryForObjectは、1つのデータしか受け取れない（0でも1つ以上でもだめ）
 		try {
 			String sql = "SELECT email,password FROM users where email = '" + email + "' AND password = '" + password
 					+ "'";
 			UserInfo selectedUserInfo = jdbcTemplate.queryForObject(sql, new UserCountRowMapper());
 			return selectedUserInfo;
 
-        //データが0だった時、if分のelse(アカウントが存在しませんという画面にいく）
 		} catch (Exception e) {
 			return null;
 		}
