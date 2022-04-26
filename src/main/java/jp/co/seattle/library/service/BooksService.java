@@ -61,10 +61,15 @@ public class BooksService {
 	 */
 	public void registBook(BookDetailsInfo bookInfo) {
 
-		String sql = "INSERT INTO books (title, author,publisher,thumbnail_name,thumbnail_url,reg_date,upd_date) VALUES ('"
+		String sql = "INSERT INTO books (title, author,publisher,publish_date,thumbnail_name,thumbnail_url,reg_date,upd_date,texts,isbn) VALUES ('"
 				+ bookInfo.getTitle() + "','" + bookInfo.getAuthor() + "','" + bookInfo.getPublisher() + "','"
-				+ bookInfo.getThumbnailName() + "','" + bookInfo.getThumbnailUrl() + "'," + "now()," + "now())";
-
+			    + bookInfo.getPublishDate()  + "','" 
+				+ bookInfo.getThumbnailName() + "','" 
+			    + bookInfo.getThumbnailUrl() + "','" 
+				+ "now()," + "','"
+			    + "now()," + "','"
+			    + bookInfo.getTexts()  + "','" + bookInfo.getIsbn() + "');";
+		
 		jdbcTemplate.update(sql);
 	}
 
@@ -73,10 +78,19 @@ public class BooksService {
 	 * 
 	 * @param bookInfo 書籍情報
 	 */
-
+	
 	public void deleteBook(Integer bookId) {
 		String sql = "DELETE FROM books WHERE id =" + bookId ;
 		jdbcTemplate.update(sql);
 
 	}
-}
+	
+	/**
+	 * 新規登録した書籍の情報を取得する
+	 */
+	public BookDetailsInfo newBook() {
+		String sql = "SELECT * FROM books WHERE id = (SELECT MAX(id) FROM books);";		
+	    BookDetailsInfo bookDetailsInfo = jdbcTemplate.queryForObject(sql, new BookDetailsInfoRowMapper());
+		return bookDetailsInfo;
+	}
+ }
