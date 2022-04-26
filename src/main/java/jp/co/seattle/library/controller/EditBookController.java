@@ -110,7 +110,8 @@ public class EditBookController {
 
 		// TODO 登録した書籍の詳細情報を表示するように実装
 		 booksService.editBook(bookInfo);
-		
+		 booksService.getBookInfo(bookId);
+		 
 		// 詳細画面に遷移する
 		model.addAttribute("bookDetailsInfo",booksService.getBookInfo(bookId));
 		model.addAttribute("resultMessage", "登録完了");
