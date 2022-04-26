@@ -63,13 +63,10 @@ public class BooksService {
 
 		String sql = "INSERT INTO books (title, author,publisher,publish_date,thumbnail_name,thumbnail_url,reg_date,upd_date,texts,isbn) VALUES ('"
 				+ bookInfo.getTitle() + "','" + bookInfo.getAuthor() + "','" + bookInfo.getPublisher() + "','"
-			    + bookInfo.getPublishDate()  + "','" 
-				+ bookInfo.getThumbnailName() + "','" 
-			    + bookInfo.getThumbnailUrl() + "','" 
-				+ "now()," + "','"
-			    + "now()," + "','"
-			    + bookInfo.getTexts()  + "','" + bookInfo.getIsbn() + "');";
-		
+				+ bookInfo.getPublishDate() + "','" + bookInfo.getThumbnailName() + "','" + bookInfo.getThumbnailUrl()
+				+ "','" + "now()','" + "now()','" +   bookInfo.getTexts() + "','" + bookInfo.getIsbn()
+				+ "');";
+
 		jdbcTemplate.update(sql);
 	}
 
@@ -78,19 +75,50 @@ public class BooksService {
 	 * 
 	 * @param bookInfo 書籍情報
 	 */
-	
+
 	public void deleteBook(Integer bookId) {
-		String sql = "DELETE FROM books WHERE id =" + bookId ;
+		String sql = "DELETE FROM books WHERE id =" + bookId;
 		jdbcTemplate.update(sql);
 
 	}
-	
+
 	/**
 	 * 新規登録した書籍の情報を取得する
 	 */
 	public BookDetailsInfo newBook() {
-		String sql = "SELECT * FROM books WHERE id = (SELECT MAX(id) FROM books);";		
-	    BookDetailsInfo bookDetailsInfo = jdbcTemplate.queryForObject(sql, new BookDetailsInfoRowMapper());
+		String sql = "SELECT * FROM books WHERE id = (SELECT MAX(id) FROM books);";
+		BookDetailsInfo bookDetailsInfo = jdbcTemplate.queryForObject(sql, new BookDetailsInfoRowMapper());
 		return bookDetailsInfo;
 	}
- }
+
+	/**
+	 * 書籍を編集する
+	 */
+
+	public BookDetailsInfo editBook(BookDetailsInfo bookInfo) {
+		String sql ;
+		
+		if(bookInfo.getThumbnailUrl() == null) {
+			
+			 sql = "update books set title ='" + bookInfo.getTitle() + "', author ='" + bookInfo.getAuthor()
+			+ "' , publisher ='" + bookInfo.getPublisher() + "', publish_date ='" + bookInfo.getPublishDate()
+			+ "' , upd_date = 'now()'" + ",isbn = '" + bookInfo.getIsbn() + "', texts = '" + bookInfo.getTexts() + "' where id ="
+			+ bookInfo.getBookId() + ";";
+			
+		}else{
+			
+			 sql = "update books set title ='" + bookInfo.getTitle() + "', author ='" + bookInfo.getAuthor()
+			+ "' , publisher ='" + bookInfo.getPublisher() + "', publish_date ='" + bookInfo.getPublishDate()
+			+ "' , thumbnail_url ='" + bookInfo.getThumbnailUrl() + "', thumbnail_name ='" + bookInfo.getThumbnailName()
+			+ "' , upd_date = 'now()'" + ",isbn = '" + bookInfo.getIsbn() + "', texts = '" + bookInfo.getTexts() + "' where id ="
+			+ bookInfo.getBookId() + ";";
+		}
+		
+			System.out.println(sql);
+			jdbcTemplate.update(sql);
+			return bookInfo;
+		
+		
+	}
+
+}
