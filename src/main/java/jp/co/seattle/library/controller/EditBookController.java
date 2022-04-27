@@ -44,10 +44,10 @@ public class EditBookController {
 	 */
 	@Transactional
 	@RequestMapping(value = "/updateBook", method = RequestMethod.POST, produces = "text/plain;charset=utf-8")
-	public String updateBook(Locale locale,@RequestParam("bookId")int bookId,@RequestParam("title") String title, @RequestParam("author") String author,
-			@RequestParam("publisher") String publisher, @RequestParam("thumbnail") MultipartFile file,
-			@RequestParam("publish_date") String publishDate, @RequestParam("isbn") String Isbn,
-			@RequestParam("texts") String Texts, Model model) {
+	public String updateBook(Locale locale, @RequestParam("bookId") int bookId, @RequestParam("title") String title,
+			@RequestParam("author") String author, @RequestParam("publisher") String publisher,
+			@RequestParam("thumbnail") MultipartFile file, @RequestParam("publish_date") String publishDate,
+			@RequestParam("isbn") String Isbn, @RequestParam("texts") String Texts, Model model) {
 		logger.info("Welcome insertBooks.java! The client locale is {}.", locale);
 
 		// パラメータで受け取った書籍情報をDtoに格納する。
@@ -81,40 +81,23 @@ public class EditBookController {
 				return "editBook";
 			}
 		}
-
 		// 書籍情報を編集する
 
-		// 必須条件が書かれているかどうかの分岐
-		String error = "";
-
-		if (title.equals("") || author.equals("") || publisher.equals("") || publishDate.equals("")) {
-			error += "必須条件を書いてください。<br>";
-		}
-
-		// 出版日がYYYYMMDD形式かどうかの分岐
-		if (!(publishDate.matches("(\\d{4})(\\d{2})(\\d{2})"))) {
-			error += "出版日は半角数字のYYYYMMDD形式で入力してください。<br>";
-		}
-
-		// isbnが10字または13文字以内で半角数字かどうかの分岐
-		if (!Isbn.equals("") && (!(Isbn.length() == 10) && !(Isbn.length() == 13) || !Isbn.matches("^[0-9]*$"))) {
-			error += "ISBNの桁数または半角数字が正しくありません。";
-		}
-
+		String error = booksService.validationcheck(title, author, publisher, publishDate, Isbn, model);
 		// どれかerrorだとeditBookに戻る
 		if (!(error.equals(""))) {
 			model.addAttribute("error", error);
 			bookInfo.setThumbnailName("null");
 			bookInfo.setThumbnailUrl("null");
-			model.addAttribute("bookDetailsInfo",bookInfo);
+			model.addAttribute("bookDetailsInfo", bookInfo);
 			return "editBook";
 		}
 
 		// TODO 登録した書籍の詳細情報を表示するように実装
-		 booksService.editBook(bookInfo);
-		 
+		booksService.editBook(bookInfo);
+
 		// 詳細画面に遷移する
-		model.addAttribute("bookDetailsInfo",booksService.getBookInfo(bookId));
+		model.addAttribute("bookDetailsInfo", booksService.getBookInfo(bookId));
 		model.addAttribute("resultMessage", "登録完了");
 		return "details";
 	}
