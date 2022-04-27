@@ -78,7 +78,7 @@ public class EditBookController {
 				// 異常終了時の処理
 				logger.error("サムネイルアップロードでエラー発生", e);
 				model.addAttribute("bookDetailsInfo", bookInfo);
-				return "addBook";
+				return "editBook";
 			}
 		}
 
@@ -101,16 +101,17 @@ public class EditBookController {
 			error += "ISBNの桁数または半角数字が正しくありません。";
 		}
 
-		// どれかerrorだとaddBookに戻る
+		// どれかerrorだとeditBookに戻る
 		if (!(error.equals(""))) {
 			model.addAttribute("error", error);
-			model.addAttribute("bookInfo", bookInfo);
-			return "addBook";
+			bookInfo.setThumbnailName("null");
+			bookInfo.setThumbnailUrl("null");
+			model.addAttribute("bookDetailsInfo",bookInfo);
+			return "editBook";
 		}
 
 		// TODO 登録した書籍の詳細情報を表示するように実装
 		 booksService.editBook(bookInfo);
-		 booksService.getBookInfo(bookId);
 		 
 		// 詳細画面に遷移する
 		model.addAttribute("bookDetailsInfo",booksService.getBookInfo(bookId));
