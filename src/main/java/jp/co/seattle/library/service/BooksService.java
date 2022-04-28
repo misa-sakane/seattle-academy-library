@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import jp.co.seattle.library.dto.BookDetailsInfo;
 import jp.co.seattle.library.dto.BookInfo;
@@ -63,13 +64,9 @@ public class BooksService {
 
 		String sql = "INSERT INTO books (title, author,publisher,publish_date,thumbnail_name,thumbnail_url,reg_date,upd_date,texts,isbn) VALUES ('"
 				+ bookInfo.getTitle() + "','" + bookInfo.getAuthor() + "','" + bookInfo.getPublisher() + "','"
-			    + bookInfo.getPublishDate()  + "','" 
-				+ bookInfo.getThumbnailName() + "','" 
-			    + bookInfo.getThumbnailUrl() + "','" 
-				+ "now()," + "','"
-			    + "now()," + "','"
-			    + bookInfo.getTexts()  + "','" + bookInfo.getIsbn() + "');";
-		
+				+ bookInfo.getPublishDate() + "','" + bookInfo.getThumbnailName() + "','" + bookInfo.getThumbnailUrl()
+				+ "','" + "now()','" + "now()','" + bookInfo.getTexts() + "','" + bookInfo.getIsbn() + "');";
+
 		jdbcTemplate.update(sql);
 	}
 
@@ -78,19 +75,66 @@ public class BooksService {
 	 * 
 	 * @param bookInfo 書籍情報
 	 */
-	
+
 	public void deleteBook(Integer bookId) {
-		String sql = "DELETE FROM books WHERE id =" + bookId ;
+		String sql = "DELETE FROM books WHERE id =" + bookId;
 		jdbcTemplate.update(sql);
 
+	}
+	/**
+	 * 書籍情報のバリデーションチェックをする
+	 */
+	public String validationcheck(String title,String author,String publisher,String publishDate,String Isbn,Model model) {
+		String error = "";
+		// 必須条件が書かれているかどうかの分岐
+		if (title.equals("") || author.equals("") || publisher.equals("") || publishDate.equals("")) {
+			error += "必須条件を書いてください。<br>";
+		}
+
+		// 出版日がYYYYMMDD形式かどうかの分岐
+		if (!(publishDate.matches("(\\d{4})(\\d{2})(\\d{2})"))) {
+			error += "出版日は半角数字のYYYYMMDD形式で入力してください。<br>";
+		}
+
+		// isbnが10字または13文字以内で半角数字かどうかの分岐
+		if (!Isbn.equals("") && (!(Isbn.length() == 10) && !(Isbn.length() == 13) || !Isbn.matches("^[0-9]*$"))) {
+			error += "ISBNの桁数または半角数字が正しくありません。";
+		}
+		return error;
 	}
 	
 	/**
 	 * 新規登録した書籍の情報を取得する
 	 */
 	public BookDetailsInfo newBook() {
-		String sql = "SELECT * FROM books WHERE id = (SELECT MAX(id) FROM books);";		
-	    BookDetailsInfo bookDetailsInfo = jdbcTemplate.queryForObject(sql, new BookDetailsInfoRowMapper());
+		String sql = "SELECT * FROM books WHERE id = (SELECT MAX(id) FROM books);";
+		BookDetailsInfo bookDetailsInfo = jdbcTemplate.queryForObject(sql, new BookDetailsInfoRowMapper());
 		return bookDetailsInfo;
 	}
- }
+
+	/**
+	 * 書籍を編集する
+	 */
+
+	public void editBook(BookDetailsInfo bookInfo) {
+		String sql;
+
+		if (bookInfo.getThumbnailUrl() == null) {
+
+			sql = "update books set title ='" + bookInfo.getTitle() + "', author ='" + bookInfo.getAuthor()
+					+ "' , publisher ='" + bookInfo.getPublisher() + "', publish_date ='" + bookInfo.getPublishDate()
+					+ "' , upd_date = 'now()'" + ",isbn = '" + bookInfo.getIsbn() + "', texts = '" + bookInfo.getTexts()
+					+ "' where id =" + bookInfo.getBookId() + ";";
+
+		} else {
+
+			sql = "update books set title ='" + bookInfo.getTitle() + "', author ='" + bookInfo.getAuthor()
+					+ "' , publisher ='" + bookInfo.getPublisher() + "', publish_date ='" + bookInfo.getPublishDate()
+					+ "' , thumbnail_url ='" + bookInfo.getThumbnailUrl() + "', thumbnail_name ='"
+					+ bookInfo.getThumbnailName() + "' , upd_date = 'now()'" + ",isbn = '" + bookInfo.getIsbn()
+					+ "', texts = '" + bookInfo.getTexts() + "' where id =" + bookInfo.getBookId() + ";";
+		}
+		jdbcTemplate.update(sql);
+	}
+
+}
