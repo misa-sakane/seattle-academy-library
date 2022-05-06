@@ -59,17 +59,15 @@ public class BulkregistController {
 			Reader reader = new InputStreamReader(stream);
 			BufferedReader buf = new BufferedReader(reader);
 
-			if ((line2 = buf.ready()) == false) {
+			if(!buf.ready()) {
 				model.addAttribute("errorMessage", "CSVファイルが読み込めません");
 				return "bulkregist";
 			}
 			while ((line = buf.readLine()) != null) {
 				count++;
-				System.out.println(count);
 				final String[] split = line.split(",", -1);
 				
 				for (int i = 0; i < split.length; i++) {
-					System.out.println(split[i]);
 				}
 
 				// バリデーションチェック
