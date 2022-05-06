@@ -66,9 +66,6 @@ public class BulkregistController {
 			while ((line = buf.readLine()) != null) {
 				count++;
 				final String[] split = line.split(",", -1);
-				
-				for (int i = 0; i < split.length; i++) {
-				}
 
 				// バリデーションチェック
 				String error = booksService.validationcheck(split[0], split[1], split[2], split[3], split[4], model);
