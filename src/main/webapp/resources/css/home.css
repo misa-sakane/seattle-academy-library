@@ -271,18 +271,18 @@ hr.border_add {
     padding:3px;
     color:#ffffff;
 }
-
 .bulk_form {
+	display:flex;
+	flex-flow: column;
 	text-align: center;
 }
 .bulk_form h2{
 	margin-bottom:20px
 }
 .bulk_form .caution{
-	text-align:left;
-	margin:10px 0px 30px 400px;
+	text-align: center;
+	margin:10px 0px 30px 10px;
 }
 .bulk_form .caution p{
 	color:#fa8072;
 }
-
